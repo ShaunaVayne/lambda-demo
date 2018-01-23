@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -114,5 +115,73 @@ public class Demo {
 		//filter(list, (str)->str.startsWith("J"));
 	}
 
+	/**
+	 * 实现map
+	 */
+	@Test
+	public void test7() {
+		List<Integer> list = Arrays.asList(100, 200, 300, 400, 500);
+		list.stream().map((e) -> e + .12 * e).forEach(System.out::println);
+	}
+
+	/**
+	 * 实现reduce(); reduce()是将集合中所有值结合成一个, 类似于sql中的sum(),avg(),count()等
+	 */
+	@Test
+	public void test8() {
+		List<Integer> list = Arrays.asList(100, 200, 300, 400, 500);
+		Double aDouble = list.stream().map((e) -> e + .12 * e).reduce((sum, e) -> sum + e).get();
+		System.out.println("total:"+aDouble);
+		Double aDouble1 = (list.stream().map((e) -> e + .12 * e).reduce((sum, e) -> sum + e).get()) / list.size();
+		System.out.println("average:"+aDouble1);
+	}
+
+	/**
+	 * 输出语句跟python的写法一模一样, 我天.
+	 */
+	@Test
+	public void test9() {
+		List<String> list = Arrays.asList("abc", "de", "ijk", "xyz");
+		List<String> list1 = list.stream().filter(e -> e.length() > 2).collect(Collectors.toList());
+		System.out.printf("list :%s , list1: %s %n", list,list1);
+	}
+
+	/**
+	 * 将字符串转大写,使用逗号拼接组成一个String, 用Collectors.joining("")方法
+	 */
+	@Test
+	public void test10() {
+		List<String> list = Arrays.asList("USA", "Japan", "France", "Germany", "Italy", "U.K", "Canada");
+		String collect = list.stream().map(e -> e.toUpperCase()).collect(Collectors.joining(", "));
+		System.out.println(collect);
+	}
+
+	/**
+	 *  通过复制不同的值创建一个子列表:
+	 *  使用stream的distinct()方法过滤集合的元素
+	 */
+	@Test
+	public void test11() {
+		List<Integer> list = Arrays.asList(9, 10, 3, 4, 7, 3, 4);
+		List<Integer> list1 = list.stream().map(e -> e * e).distinct().collect(Collectors.toList());
+		System.out.printf("list1 : %s", list1);
+	}
+
+	/**
+	 * 一个api就能搞定所有:
+	 * mapToInt(e -> e).summaryStatistics();
+	 */
+	@Test
+	public void test12() {
+		List<Integer> list = Arrays.asList(2, 3, 5, 7, 11, 13, 17, 19, 23, 29);
+		IntSummaryStatistics statistics = list.stream().mapToInt(e -> e).summaryStatistics();
+		System.out.printf("max: %s %n", statistics.getMax());
+		System.out.printf("min: %s %n", statistics.getMin());
+		System.out.printf("average: %s %n", statistics.getAverage());
+		System.out.printf("sum: %s %n", statistics.getSum());
+		new Thread(() -> System.out.println("-----------")).start();
+		Integer integer = list.stream().reduce((sum, e) -> sum + e).get();
+		System.out.println("sum2:"+integer);
+	}
 
 }
